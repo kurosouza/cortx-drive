@@ -1,13 +1,17 @@
 package org.cwinteractive.cortxdrive.models;
 
-import java.io.File;
-
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class FileInputModel {
 
 	private String name;
 	private String description;
+	private String fileName;
+	private String cid;
+	
+	@JsonIgnore
 	private MultipartFile file;
 
 	public String getName() {
@@ -33,5 +37,23 @@ public class FileInputModel {
 	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getCid() {
+		return cid;
+	}
+
+	public void setCid(String cid) {
+		this.cid = cid;
+	}
+	
+	
 
 }

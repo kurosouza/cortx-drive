@@ -12,7 +12,8 @@
 	<div class="top-bar">
 		<div class="top-bar-left">
 			<ul class="dropdown menu" data-dropdown-menu>
-				<li class="menu-text">CORTX Drive</li>
+				<li class="menu-text"><a href="#" th:href="@{/home}">CORTX
+						Drive</a></li>
 
 				<li><a href="#">CORTX</a></li>
 				<li><a href="#">IPFS</a></li>
@@ -66,6 +67,37 @@
 
 				<div class="row small-up-2 medium-up-3 large-up-4">
 
+					<div class="product-card column"
+						th:each="file : ${cortxFilesMetadata}">
+						<div class="product-card-thumbnail">
+							<a href="#"><img src="/img/placeholder-image.jpg" /></a>
+						</div>
+						<h2 class="product-card-title">
+							<a href="#" th:text="${file['name']}">Product Name</a>
+						</h2>
+						<span class="product-card-desc" th:text="${file['description']}">Product
+							Description</span> <span class="product-card-price"
+							th:text="${file['fileName']}">$9.99</span>
+						<div class="product-card-colors">
+							<a href="#" th:href="@{/copyToIpfs(fileName=${fileName})}"
+								class="button success">send to ipfs</a>
+							<button href="#" class="product-card-color-option">
+								<img src="https://placehold.it/30x30" />
+							</button>
+							<button href="#" class="product-card-color-option">
+								<img src="https://placehold.it/30x30" />
+							</button>
+							<button href="#" class="product-card-color-option">
+								<img src="https://placehold.it/30x30" />
+							</button>
+							<button href="#" class="product-card-color-option">
+								<img src="https://placehold.it/30x30" />
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="row small-up-2 medium-up-3 large-up-4">
 
 					<div class="product-card column" th:each="fileName : ${cortxFiles}">
 						<div class="product-card-thumbnail">
@@ -77,7 +109,8 @@
 						<span class="product-card-desc">Product Description</span> <span
 							class="product-card-price" th:text="${fileName}">$9.99</span>
 						<div class="product-card-colors">
-						    <a href="#" th:href="@{/copyToIpfs(fileName=${fileName})}" class="button success">send to ipfs</a>
+							<a href="#" th:href="@{/copyToIpfs(fileName=${fileName})}"
+								class="button success">send to ipfs</a>
 							<button href="#" class="product-card-color-option">
 								<img src="https://placehold.it/30x30" />
 							</button>
@@ -95,7 +128,8 @@
 
 				</div>
 
-                <hr />
+                <!-- 
+				<hr />
 
 				<div class="row small-up-2 medium-up-3 large-up-4">
 
@@ -107,12 +141,12 @@
 									src="/img/copy-file.webp" width="32px" height="32px"
 									alt="copy to IPFS" /></a></span>
 						</h5>
-						<!-- 
+						 
 						<div class="row">
 							<div class="columns flex"><h5 th:text="${fileName}">My Site</h5></div>
 							<div class="columns flex"><a href="#" th:href="@{/copyToIpfs/(${fileName})}">Copy to IPFS</a></div>
 						</div>
-						 -->
+						 
 					</div>
 
 					<div class="column">
@@ -125,6 +159,7 @@
 					</div>
 
 				</div>
+				 -->
 
 				<hr>
 

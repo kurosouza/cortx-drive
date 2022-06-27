@@ -2,7 +2,6 @@ package org.cwinteractive.cortxdrive.services;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.cwinteractive.cortxdrive.models.FileInputModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -43,9 +45,16 @@ public class CortxFileService {
 		cortxS3client.putObject(defaultBucketName, file.getName(), file);
 	}
 	
-	public String save(InputStream inputStream, String fileName) {
+	public String save(InputStream inputStream, String fileName, FileInputModel fileInputModel) {
 		logger.info(String.format("Uploading %s to bucket %s", fileName, defaultBucketName));
-		PutObjectResult result = cortxS3client.putObject(defaultBucketName, fileName, inputStream, null);
+		
+		// new PutObjectRequest(defaultBucketName, fileName, null)
+		
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.addUserMetadata("name", fileInputModel.getName());
+		objectMetadata.addUserMetadata("description", fileInputModel.getDescription());
+		
+		PutObjectResult result = cortxS3client.putObject(defaultBucketName, fileName, inputStream, objectMetadata);
 		return result.toString();
 	}
 	
@@ -66,10 +75,44 @@ public class CortxFileService {
 		return inputStream;
 	}
 	
-	public List<String> listFiles(String bucketName) {
+	/*
+	public List<FileInputModel> listFilesWithMetadata(String bucketName) {
 		ObjectListing objectListing = cortxS3client.listObjects(defaultBucketName);
 		
-		return objectListing.getObjectSummaries().stream().map(obj -> obj.getKey()).collect(Collectors.toList());
+		return objectListing.getObjectSummaries().stream().map(obj -> {
+			var fileModel = new FileInputModel();
+			S3Object s3Object = cortxS3client.getObject(defaultBucketName, obj.getKey());
+			var s3objectUserMetaData = s3Object.getObjectMetadata().getUserMetadata();
+			fileModel.setName(s3objectUserMetaData.get("name"));
+			fileModel.setDescription(s3objectUserMetaData.get("description"));
+			return fileModel;
+		}).collect(Collectors.toList());
+	}
+	
+	public List<FileInputModel> listFilesWithMetadata() {
+		return listFilesWithMetadata(defaultBucketName);
+	}
+	
+	*/
+	
+	public List<Map<String, String>> listFilesWithMetadata(String bucketName) {
+		ObjectListing objectListing = cortxS3client.listObjects(defaultBucketName);
+		
+		return objectListing.getObjectSummaries().stream().map(obj -> {
+			
+			S3Object s3Object = cortxS3client.getObject(defaultBucketName, obj.getKey());
+			var s3objectUserMetaData = s3Object.getObjectMetadata().getUserMetadata();
+			
+			return s3objectUserMetaData;
+		}).collect(Collectors.toList());
+	}
+	
+	public List<Map<String, String>> listFilesWithMetadata() {
+		return listFilesWithMetadata(defaultBucketName);
+	}
+	
+	public List<String> listFiles(String bucketName) {
+		return cortxS3client.listObjects(bucketName).getObjectSummaries().stream().map(o -> o.getKey()).collect(Collectors.toList());
 	}
 	
 	public List<String> listFiles() {

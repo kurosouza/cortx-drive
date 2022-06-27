@@ -1,6 +1,7 @@
 package org.cwinteractive.cortxdrive.controllers;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.cwinteractive.cortxdrive.models.FileInputModel;
 import org.cwinteractive.cortxdrive.models.StatusMessage;
@@ -17,10 +18,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Controller
 public class HomeController {
 
 	Logger logger = LoggerFactory.getLogger(HomeController.class);
+
+	@Autowired
+	ObjectMapper objectMapper;
 	
 	@Autowired
 	CortxToIpfsTransferService cortxToIpfsTranserService;
@@ -43,6 +49,10 @@ public class HomeController {
 		modelMap.addAttribute("uploadFileData", fileInputModel);
 		var cortxFiles = cortxFileService.listFiles();
 		modelMap.addAttribute("cortxFiles", cortxFiles);
+		
+		// var cortxFilesMetadata = cortxFileService.listFilesWithMetadata();
+		modelMap.addAttribute("cortxFilesMetadata", List.of());
+		
 		return "home";
 	}
 
@@ -59,7 +69,8 @@ public class HomeController {
 		logger.info("file content type: " + fileInputModel.getFile().getContentType());
 
 		String result = cortxFileService.save(fileInputModel.getFile().getInputStream(),
-				fileInputModel.getFile().getOriginalFilename());
+				fileInputModel.getFile().getOriginalFilename(),
+				fileInputModel);
 		
 		logger.info("Upload to CORTX completed: " + result);
 		
