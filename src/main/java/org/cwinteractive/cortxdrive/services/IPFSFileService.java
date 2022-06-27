@@ -21,15 +21,14 @@ public class IPFSFileService {
 	
 	public String save(File file) throws Exception {
 		NamedStreamable.FileWrapper fileWrapper = new NamedStreamable.FileWrapper(file);
-		MerkleNode addResult = ipfs.add(fileWrapper).get(0);
-		
+		MerkleNode addResult = ipfs.add(fileWrapper).get(0);		
 		return addResult.toJSONString();
 	}
 	
-	public String save(InputStream inputStream) throws Exception {
-		NamedStreamable.InputStreamWrapper inputStreamWrapper = new NamedStreamable.InputStreamWrapper(inputStream);
-		MerkleNode addResult = ipfs.add(inputStreamWrapper).get(0);
-		
+	public String save(String fileName, InputStream inputStream) throws Exception {
+		byte[] fileData = inputStream.readAllBytes(); 
+		NamedStreamable.ByteArrayWrapper fileDataWrapper = new NamedStreamable.ByteArrayWrapper(fileName, fileData);		
+		MerkleNode addResult = ipfs.add(fileDataWrapper).get(0);		
 		return addResult.toJSONString();
 	}
 	

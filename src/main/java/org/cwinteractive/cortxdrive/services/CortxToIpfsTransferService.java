@@ -1,8 +1,15 @@
 package org.cwinteractive.cortxdrive.services;
 
-import java.io.InputStream;
+import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+@Service
 public class CortxToIpfsTransferService {
+	
+	Logger logger = LoggerFactory.getLogger(CortxToIpfsTransferService.class);
 	
 	private CortxFileService cortxFileService;
 	
@@ -14,8 +21,9 @@ public class CortxToIpfsTransferService {
 	}
 	
 	public String moveToIPFS(String fileName) throws Exception {
-		InputStream cortxObjectStream = cortxFileService.retrieveAsStream(fileName);
-		String addResult = ipfsFileService.save(cortxObjectStream);
+		File cortxObjectFile = cortxFileService.retrieve(fileName);
+		logger.info(String.format("Retrieved cortx object: %s, size: %s", cortxObjectFile.getName(), cortxObjectFile.length()));
+		String addResult = ipfsFileService.save(cortxObjectFile);
 		return addResult;
 	}
 

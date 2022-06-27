@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.cwinteractive.cortxdrive.models.FileInputModel;
 import org.cwinteractive.cortxdrive.models.StatusMessage;
 import org.cwinteractive.cortxdrive.services.CortxFileService;
+import org.cwinteractive.cortxdrive.services.CortxToIpfsTransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,15 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
 
 	Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
+	@Autowired
+	CortxToIpfsTransferService cortxToIpfsTranserService;
 
 	@Autowired
 	CortxFileService cortxFileService;
@@ -64,6 +69,21 @@ public class HomeController {
 		var cortxFiles = cortxFileService.listFiles();
 		modelMap.addAttribute("cortxFiles", cortxFiles);
 		
+		return "home";
+	}
+	
+	@GetMapping(path = "/copyToIpfs")
+	public String copyToIPFS(@RequestParam("fileName") String fileName, ModelMap modelMap) throws Exception {
+		modelMap.addAttribute("uploadFileData", new FileInputModel());
+		logger.info(String.format("Copying %s to IPFS ..", fileName));
+		
+		String copyToIPFSResponse = cortxToIpfsTranserService.moveToIPFS(fileName);
+		
+		var cortxFiles = cortxFileService.listFiles();
+		modelMap.addAttribute("cortxFiles", cortxFiles);
+		
+		var statusMessage = new StatusMessage("Copy to IPFS", copyToIPFSResponse , 0);
+		modelMap.addAttribute("statusMessage", statusMessage);
 		return "home";
 	}
 

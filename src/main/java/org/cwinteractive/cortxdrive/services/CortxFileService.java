@@ -2,8 +2,10 @@ package org.cwinteractive.cortxdrive.services;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,8 +52,10 @@ public class CortxFileService {
 	public File retrieve(String fileName) throws Exception {
 		S3Object s3object = cortxS3client.getObject(defaultBucketName, fileName);
 		S3ObjectInputStream inputStream = s3object.getObjectContent();
-		File tempFile = File.createTempFile(fileName, null);
-		Files.copy(inputStream, Paths.get(tempFile.getAbsolutePath()));
+		String fileNameSuffix = fileName.substring(fileName.lastIndexOf('.'));
+		String fileNamePrefix = fileName.substring(0, fileName.lastIndexOf('.'));
+		File tempFile = File.createTempFile(fileNamePrefix, fileNameSuffix);
+		Files.copy(inputStream, Paths.get(tempFile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
 		return tempFile;
 	}
 	
