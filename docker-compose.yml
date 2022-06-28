@@ -5,6 +5,7 @@ services:
     ports:
       - "4001:4001"
       - "5001:5001"
+    network_mode: host
     user: "ipfs"
     command: [ "daemon" ]
     
@@ -13,16 +14,16 @@ services:
     environment:
       - AWS_ACCESS_KEY=sgiamadmin
       - AWS_SECRET_KEY=ldapadmin
-      - AWS_ENDPOINT_URL=http://uvo1u3oah3lca74gefz.vm.cld.sr:31949
+      - AWS_ENDPOINT_URL=http://127.0.0.1:31949
       - DEFAULT_BUCKET_NAME=cortxdrive
       - IPFS_NODE_URL=/ip4/ipfsd/tcp/5001
-      - IPFS_ADD_FILE_URL=http://ipfsd:5001/api/v0/add
-      - IPFS_RETRIEVE_FILE_URL=http://ipfsd:5001/api/v0/cat
+      - IPFS_ADD_FILE_URL=http://127.0.0.1:5001/api/v0/add
+      - IPFS_RETRIEVE_FILE_URL=http://127.0.0.1:5001/api/v0/cat
     ports:
       -  "8081:8081"
       
-    # network_mode: host
+    network_mode: host
     command: ["java", "-jar", "app.jar"]
-    links:
-      - ipfsd
+    # links:
+    #   - ipfsd
 
