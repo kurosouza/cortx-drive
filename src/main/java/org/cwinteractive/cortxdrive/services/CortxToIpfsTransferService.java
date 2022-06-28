@@ -1,6 +1,7 @@
 package org.cwinteractive.cortxdrive.services;
 
 import java.io.File;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,17 @@ public class CortxToIpfsTransferService {
 		this.ipfsFileService = ipfsFileService;
 	}
 	
-	public String moveToIPFS(String fileName) throws Exception {
+	public Map<String,Object> moveToIPFS(String fileName) throws Exception {
 		File cortxObjectFile = cortxFileService.retrieve(fileName);
 		logger.info(String.format("Retrieved cortx object: %s, size: %s", cortxObjectFile.getName(), cortxObjectFile.length()));
-		String addResult = ipfsFileService.save(cortxObjectFile);
+		Map<String,Object> addResult = ipfsFileService.save(cortxObjectFile);
 		return addResult;
+	}
+	
+	public String moveToCortx(String cid, String fileName) throws Exception {
+		File file = ipfsFileService.download(cid, fileName);
+		String result = cortxFileService.save(file);
+		return result;
 	}
 
 }

@@ -41,8 +41,9 @@ public class CortxFileService {
 		return cortxS3client.listBuckets().stream().map(b -> b.getName()).collect(Collectors.toList());
 	}
 	
-	public void save(File file, Map metadata) {
-		cortxS3client.putObject(defaultBucketName, file.getName(), file);
+	public String save(File file) {
+		PutObjectResult result = cortxS3client.putObject(defaultBucketName, file.getName(), file);
+		return result.toString();
 	}
 	
 	public String save(InputStream inputStream, String fileName, FileInputModel fileInputModel) {

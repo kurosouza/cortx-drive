@@ -3,9 +3,13 @@ package org.cwinteractive.cortxdrive.services;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +22,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.ipfs.api.IPFS;
 import io.ipfs.api.MerkleNode;
 import io.ipfs.api.NamedStreamable;
@@ -25,6 +32,9 @@ import io.ipfs.multihash.Multihash;
 
 @Service
 public class IPFSFileService {
+	
+	@Autowired
+	ObjectMapper objectMapper;
 
 	Logger logger = LoggerFactory.getLogger(IPFSFileService.class);
 	
@@ -40,13 +50,14 @@ public class IPFSFileService {
 		this.ipfs = ipfs;
 	}
 	
-	public String save(File file) throws Exception {
+	public Map<String,Object> save(File file) throws Exception {
 		// NamedStreamable.FileWrapper fileWrapper = new NamedStreamable.FileWrapper(file);
 		// MerkleNode addResult = ipfs.add(fileWrapper).get(0);		
 		// return addResult.toJSONString();
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 		
 		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 		body.add("file", file);
@@ -54,9 +65,13 @@ public class IPFSFileService {
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<String> response = restTemplate.postForEntity(ipfsAddFileUrl, requestEntity, String.class);
+		
+		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+		HashMap<String, Object> responseMap = objectMapper.readValue(response.getBody().toString(), typeRef);
+		
 		logger.info(String.format("SaveFileResult: Response Code: %s, Response text: %s", response.getStatusCode(), response.toString()));
 		
-		return response.toString();
+		return responseMap;
 	
 	}
 	

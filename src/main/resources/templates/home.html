@@ -47,6 +47,12 @@
 						<p class="lead">Use CORTX Drive to migrate your data to
 							Seagate's amazing Open Source object storage system. You can also
 							share your data to IPFS from CORTX Drive. Go Crazy!!!</p>
+							
+							<p>Powered by</p>
+							<img src="/img/Seagate_logo_black.png" width="275px" height="60px" />
+							
+							<img src="/img/cortx-logo.webp" width="275px" height="60px" />
+							<img src="/img/IPFS_logo.png" width="200px" height="54px" />
 					</div>
 				</div>
 
@@ -56,16 +62,18 @@
 					<div th:if="${statusMessage.messageType == 0}" class="callout">
 					<div th:if="${statusMessage.messageType == -1}" class="callout error">
 					-->
-					<div class="callout">
+					<div class="callout success">
 						<h5 th:text="${statusMessage.title}">This is a secondary
 							callout</h5>
 						<p th:text="${statusMessage.details}">It has an easy to
 							override visual style, and is appropriately subdued.</p>
-						<a href="#">Click here to also upload it to IPFS.</a>
+						<!--  <a href="#">Click here to also upload it to IPFS.</a> -->
 					</div>
 				</div>
 
 				<div class="row small-up-2 medium-up-3 large-up-4">
+				
+				<h2>My Files</h2>
 
 					<div class="product-card column"
 						th:each="file : ${cortxFilesMetadata}">
@@ -81,17 +89,12 @@
 						<div class="product-card-colors">
 							<a href="#" th:href="@{/copyToIpfs(fileName=${fileName})}"
 								class="button success">send to ipfs</a>
+
 							<button href="#" class="product-card-color-option">
 								<img src="https://placehold.it/30x30" />
 							</button>
 							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
-							</button>
-							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
-							</button>
-							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
+								<img src="/img/download-512.webp" width="32px" height="32px" />
 							</button>
 						</div>
 					</div>
@@ -104,24 +107,15 @@
 							<a href="#"><img src="/img/placeholder-image.jpg" /></a>
 						</div>
 						<h2 class="product-card-title">
-							<a href="#">Product Name</a>
+							<a href="#" th:text="${fileName}">Product Name</a>
 						</h2>
-						<span class="product-card-desc">Product Description</span> <span
-							class="product-card-price" th:text="${fileName}">$9.99</span>
+						
 						<div class="product-card-colors">
 							<a href="#" th:href="@{/copyToIpfs(fileName=${fileName})}"
 								class="button success">send to ipfs</a>
-							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
-							</button>
-							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
-							</button>
-							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
-							</button>
-							<button href="#" class="product-card-color-option">
-								<img src="https://placehold.it/30x30" />
+					
+							<button href="#">
+								<img src="/img/download-512.webp" width="64px" height="64px" />
 							</button>
 						</div>
 					</div>

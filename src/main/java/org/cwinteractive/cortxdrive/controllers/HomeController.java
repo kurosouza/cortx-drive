@@ -2,6 +2,7 @@ package org.cwinteractive.cortxdrive.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.cwinteractive.cortxdrive.models.FileInputModel;
 import org.cwinteractive.cortxdrive.models.StatusMessage;
@@ -10,6 +11,7 @@ import org.cwinteractive.cortxdrive.services.CortxToIpfsTransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -88,14 +90,34 @@ public class HomeController {
 		modelMap.addAttribute("uploadFileData", new FileInputModel());
 		logger.info(String.format("Copying %s to IPFS ..", fileName));
 		
-		String copyToIPFSResponse = cortxToIpfsTranserService.moveToIPFS(fileName);
+		Map<String, Object> copyToIPFSResponse = cortxToIpfsTranserService.moveToIPFS(fileName);
+		
+		String cid = copyToIPFSResponse.get("Name").toString();
 		
 		var cortxFiles = cortxFileService.listFiles();
 		modelMap.addAttribute("cortxFiles", cortxFiles);
 		
-		var statusMessage = new StatusMessage("Copy to IPFS", copyToIPFSResponse , 0);
+		var statusMessage = new StatusMessage("Copy to IPFS", String.format("File %s saved to IPFS with CID: %s", fileName, cid) , 0);
 		modelMap.addAttribute("statusMessage", statusMessage);
 		return "home";
+	}
+	
+	@GetMapping(path = "/importFromIpfs")
+	public String downloadFromIPFS(@RequestParam("cid") String cid, @RequestParam("fileName") String fileName, Model model) throws Exception {
+		String putObjectResult = cortxToIpfsTranserService.moveToCortx(cid, fileName);
+		StatusMessage statusMessage = new StatusMessage("File imported to CORTX", putObjectResult, 1);
+		model.addAttribute("statusMessage", statusMessage);
+		var cortxFiles = cortxFileService.listFiles();
+		model.addAttribute("cortxFiles", cortxFiles);
+		
+		return "home";
+	}
+	
+	
+	@GetMapping(path = "/download") 
+	Resource downloadFromCORTX(@RequestParam("fileName") String fileName) throws Exception {
+		
+		return null;
 	}
 
 }
