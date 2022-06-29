@@ -4,6 +4,10 @@
 
 CORTX Drive is a file management app built to use Seagate's open source object storage system: CORTX. it provides a web based user interface that can be easily navigated and allows the user store and browse their uploaded files in an easy-to-use friendly manner.
 
+### Hackathon PR
+
+https://github.com/Seagate/cortx/pull/1580
+
 ## Goals
 
 - To provide an easy to use app that allows users store and manage their files on the cloud
