@@ -62,7 +62,7 @@ Or view the logs from the IPFS node by typing
 docker-compose logs ipfsd
 ```
 
-The application should now be accessible from http://localhost:8081/home
+The application should now be accessible from http://localhost:8081/home. The IPFS node dashboard should also be available at http://localhost:5001/webui
 
 #### Notes
 
@@ -110,3 +110,11 @@ The quickest way to get these tools is to use [sdkman!](https://sdkman.io/)
 ## Screenshots
 
 ![](./docs/img/screenshot-media-1.png)
+
+
+
+## Video
+
+Here is a video showing a demo of the application
+
+https://youtu.be/3ZVRK8s75SY
